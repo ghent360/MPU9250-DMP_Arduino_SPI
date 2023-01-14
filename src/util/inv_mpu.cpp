@@ -2562,8 +2562,9 @@ int mpu_load_firmware(unsigned short length, const unsigned char *firmware,
             return -1;
         if (mpu_read_mem(ii, this_write, cur))
             return -1;
-        if (memcmp(firmware+ii, cur, this_write))
+        if (memcmp(firmware+ii, cur, this_write)) {
             return -2;
+        }
     }
 
     /* Set program start address. */

@@ -58,7 +58,7 @@ uint8_t MPU9250_SPI::read(uint8_t reg_addr, uint8_t length, uint8_t *dest) {
   deselect();
   p_spi->endTransaction();
 #ifdef TEENSYDUINO
-  delayNanoseconds(65);
+  delayNanoseconds(150);
 #endif
   return i; // Return number of bytes written
 }
@@ -79,7 +79,7 @@ uint8_t MPU9250_SPI::write(uint8_t reg_addr, uint8_t length, uint8_t *src) {
   deselect();
   p_spi->endTransaction();
 #ifdef TEENSYDUINO
-  delayNanoseconds(65);
+  delayNanoseconds(150);
 #endif
   return i; // Return number of bytes written
 }
@@ -95,7 +95,7 @@ uint8_t MPU9250_SPI::write(uint8_t reg_addr, uint8_t value) {
   deselect();
   p_spi->endTransaction();
 #ifdef TEENSYDUINO
-  delayNanoseconds(65);
+  delayNanoseconds(150);
 #endif
   return result;
 }

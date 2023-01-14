@@ -61,13 +61,6 @@ inv_error_t MPU9250_DMP::begin(void)
 	if (result)
 		return result;
 
-	uint8_t b;
-	mpu_read_reg(MPU9250_WHO_AM_I, &b);
-	if (b != 0x71) {
-		Serial.print("MPU ID mismatch ");
-		Serial.println(b, HEX);
-		return -1;
-	}
 	if (_cs_pin == -1) {
 		mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
 	}
