@@ -17,10 +17,9 @@ Supported Platforms:
 ******************************************************************************/
 #include "SparkFunMPU9250-DMP.h"
 #include "MPU9250_RegisterMap.h"
+#include <SPI.h>
 
-extern "C" {
 #include "util/inv_mpu.h"
-}
 
 static unsigned char mpu9250_orientation;
 static unsigned char tap_count;
@@ -31,6 +30,15 @@ static void tap_cb(unsigned char direction, unsigned char count);
 
 MPU9250_DMP::MPU9250_DMP()
 {
+	_cs_pin = -1;
+	_mSense = 6.665f; // Constant - 4915 / 32760
+	_aSense = 0.0f;   // Updated after accel FSR is set
+	_gSense = 0.0f;   // Updated after gyro FSR is set
+}
+
+MPU9250_DMP::MPU9250_DMP(int16_t cs_pin)
+{
+	_cs_pin = cs_pin;
 	_mSense = 6.665f; // Constant - 4915 / 32760
 	_aSense = 0.0f;   // Updated after accel FSR is set
 	_gSense = 0.0f;   // Updated after gyro FSR is set
@@ -41,14 +49,28 @@ inv_error_t MPU9250_DMP::begin(void)
 	inv_error_t result;
     struct int_param_s int_param;
 	
-	Wire.begin();
-	
+	if (_cs_pin == -1) {
+		Wire.begin();
+		int_param.cs_pin = -1;
+	} else {
+		SPI.begin();
+		int_param.cs_pin = _cs_pin;
+		int_param.p_spi = &SPI;
+	}
 	result = mpu_init(&int_param);
-	
 	if (result)
 		return result;
-	
-	mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
+
+	uint8_t b;
+	mpu_read_reg(MPU9250_WHO_AM_I, &b);
+	if (b != 0x71) {
+		Serial.print("MPU ID mismatch ");
+		Serial.println(b, HEX);
+		return -1;
+	}
+	if (_cs_pin == -1) {
+		mpu_set_bypass(1); // Place all slaves (including compass) on primary bus
+	}
 	
 	setSensors(INV_XYZ_GYRO | INV_XYZ_ACCEL | INV_XYZ_COMPASS);
 	

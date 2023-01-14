@@ -28,10 +28,8 @@ Supported Platforms:
 #define COMPASS_ENABLED
 
 // Include the Invensense MPU9250 driver and DMP keys:
-extern "C" {
 #include "util/inv_mpu.h"
 #include "util/inv_mpu_dmp_motion_driver.h"
-}
 
 typedef int inv_error_t;
 #define INV_SUCCESS 0
@@ -80,6 +78,7 @@ public:
 	float heading;
 	
 	MPU9250_DMP();
+	MPU9250_DMP(int16_t cs_pin);
 	
 	// begin(void) -- Verifies communication with the MPU-9250 and the AK8963,
 	// and initializes them to the default state:
@@ -376,6 +375,7 @@ public:
 	int selfTest(unsigned char debug = 0);
 	
 private:
+    int16_t _cs_pin;
 	unsigned short _aSense;
 	float _gSense, _mSense;
 	

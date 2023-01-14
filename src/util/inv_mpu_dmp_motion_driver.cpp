@@ -25,22 +25,11 @@
 #include "dmpmap.h"
 
 /* The following functions must be defined for this platform:
- * i2c_write(unsigned char slave_addr, unsigned char reg_addr,
- *      unsigned char length, unsigned char const *data)
- * i2c_read(unsigned char slave_addr, unsigned char reg_addr,
- *      unsigned char length, unsigned char *data)
- * delay_ms(unsigned long num_ms)
  * get_ms(unsigned long *count)
  */
 #include <Arduino.h>
-#include "arduino_mpu9250_i2c.h"
 #include "arduino_mpu9250_clk.h"
-#define i2c_write(a, b, c, d) arduino_i2c_write(a, b, c, d)
-#define i2c_read(a, b, c, d)  arduino_i2c_read(a, b, c, d)
-#define delay_ms  arduino_delay_ms
 #define get_ms    arduino_get_clock_ms
-#define log_i     _MLPrintLog
-#define log_e     _MLPrintLog
 
 /* These defines are copied from dmpDefaultMPU6050.c in the general MPL
  * releases. These defines may change for each DMP image, so be sure to modify
@@ -602,7 +591,7 @@ int dmp_set_accel_bias(long *bias)
 
     mpu_get_accel_sens(&accel_sens);
     accel_sf = (long long)accel_sens << 15;
-    __no_operation();
+    //__no_operation();
 
     accel_bias_body[0] = bias[dmp.orient & 3];
     if (dmp.orient & 4)

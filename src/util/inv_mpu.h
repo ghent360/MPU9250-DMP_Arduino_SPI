@@ -21,6 +21,8 @@
 #ifndef _INV_MPU_H_
 #define _INV_MPU_H_
 
+#include <stdint.h>
+
 #define INV_X_GYRO      (0x40)
 #define INV_Y_GYRO      (0x20)
 #define INV_Z_GYRO      (0x10)
@@ -28,19 +30,11 @@
 #define INV_XYZ_ACCEL   (0x08)
 #define INV_XYZ_COMPASS (0x01)
 
+class SPIClass;
+
 struct int_param_s {
-#if defined EMPL_TARGET_MSP430 || defined MOTION_DRIVER_TARGET_MSP430
-    void (*cb)(void);
-    unsigned short pin;
-    unsigned char lp_exit;
-    unsigned char active_low;
-#elif defined EMPL_TARGET_UC3L0
-    unsigned long pin;
-    void (*cb)(volatile void*);
-    void *arg;
-#elif defined EMPL_TARGET_STM32F4
-    void (*cb)(void);
-#endif
+    int8_t cs_pin;
+    SPIClass * p_spi;
 };
 
 #define MPU_INT_STATUS_DATA_READY       (0x0001)
