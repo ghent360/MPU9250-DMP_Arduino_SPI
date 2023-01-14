@@ -4,9 +4,10 @@
 #define MPU9250
 #include "mpu_reg.h"
 
-#define SPI_DATA_RATE 1000000 // 1MHz is the max speed of the MPU-9250
-#define SPI_MODE      SPI_MODE3
-#define READ_FLAG     0x80
+#define SPI_DATA_RATE       1000000 // 1MHz is the max speed of the MPU-9250
+#define SPI_FAST_DATA_RATE 18000000 // 18MHz read INT and sensor data.
+#define SPI_MODE           SPI_MODE3
+#define READ_FLAG          0x80
 
 void MPU9250_SPI::begin(int16_t cs) {
     begin(&SPI, cs);
@@ -40,7 +41,9 @@ void MPU9250_SPI::deselect()
 }
 
 uint8_t MPU9250_SPI::read(uint8_t reg_addr, uint8_t length, uint8_t *dest) {
-  p_spi->beginTransaction(SPISettings(SPI_DATA_RATE, MSBFIRST, SPI_MODE));
+  uint32_t data_rate = (reg_addr >= MPU_INT_STATUS && reg_addr <= MPU_S0_DO) ?
+    SPI_FAST_DATA_RATE : SPI_DATA_RATE;
+  p_spi->beginTransaction(SPISettings(data_rate, MSBFIRST, SPI_MODE));
   select();
 #ifdef TEENSYDUINO
   delayNanoseconds(50);

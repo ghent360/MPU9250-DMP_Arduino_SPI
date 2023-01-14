@@ -78,6 +78,8 @@ public:
 	float heading;
 	
 	MPU9250_DMP();
+	// Initialize the object in SPI mode with the provided CS pin.
+	// It will use the default SPI instance.
 	MPU9250_DMP(int16_t cs_pin);
 	
 	// begin(void) -- Verifies communication with the MPU-9250 and the AK8963,
