@@ -43,22 +43,20 @@ uint8_t MPU9250_SPI::read(uint8_t reg_addr, uint8_t length, uint8_t *dest) {
   p_spi->beginTransaction(SPISettings(SPI_DATA_RATE, MSBFIRST, SPI_MODE));
   select();
 #ifdef TEENSYDUINO
-  delayNanoseconds(150);
+  delayNanoseconds(50);
 #endif
   p_spi->transfer(reg_addr | READ_FLAG);
 
   uint8_t i;
-  for (i = 0; i < length; i++)
-  {
+  for (i = 0; i < length; i++) {
     dest[i] = p_spi->transfer(0x00);
   }
 
-#ifdef TEENSYDUINO
-  delayNanoseconds(500);
-#endif
   deselect();
   p_spi->endTransaction();
-  delayMicroseconds(50);
+#ifdef TEENSYDUINO
+  delayNanoseconds(65);
+#endif
   return i; // Return number of bytes written
 }
 
@@ -66,22 +64,20 @@ uint8_t MPU9250_SPI::write(uint8_t reg_addr, uint8_t length, uint8_t *src) {
   p_spi->beginTransaction(SPISettings(SPI_DATA_RATE, MSBFIRST, SPI_MODE));
   select();
 #ifdef TEENSYDUINO
-  delayNanoseconds(150);
+  delayNanoseconds(50);
 #endif
   p_spi->transfer(reg_addr);
 
   uint8_t i;
-  for (i = 0; i < length; i++)
-  {
+  for (i = 0; i < length; i++) {
     p_spi->transfer(src[i]);
   }
 
-#ifdef TEENSYDUINO
-  delayNanoseconds(500);
-#endif
   deselect();
   p_spi->endTransaction();
-  delayMicroseconds(50);
+#ifdef TEENSYDUINO
+  delayNanoseconds(65);
+#endif
   return i; // Return number of bytes written
 }
 
@@ -89,21 +85,20 @@ uint8_t MPU9250_SPI::write(uint8_t reg_addr, uint8_t value) {
   p_spi->beginTransaction(SPISettings(SPI_DATA_RATE, MSBFIRST, SPI_MODE));
   select();
 #ifdef TEENSYDUINO
-  delayNanoseconds(150);
+  delayNanoseconds(50);
 #endif
   p_spi->transfer(reg_addr);
   uint8_t result = p_spi->transfer(value);
-#ifdef TEENSYDUINO
-  delayNanoseconds(500);
-#endif
   deselect();
   p_spi->endTransaction();
-  delayMicroseconds(50);
+#ifdef TEENSYDUINO
+  delayNanoseconds(65);
+#endif
   return result;
 }
 
 uint8_t MPU9250_SPI::read(uint8_t reg_addr) {
-    return write(reg_addr | READ_FLAG, 0xff);
+  return write(reg_addr | READ_FLAG, 0xff);
 }
 
 uint8_t MPU9250_SPI::read_compass(uint8_t reg_addr, uint8_t length, uint8_t *dest) {
