@@ -58,7 +58,11 @@ uint8_t MPU9250_SPI::read(uint8_t reg_addr, uint8_t length, uint8_t *dest) {
   deselect();
   p_spi->endTransaction();
 #ifdef TEENSYDUINO
-  delayNanoseconds(150);
+  if (data_rate != SPI_FAST_DATA_RATE) {
+    delayNanoseconds(150);
+  } else {
+    delayNanoseconds(65);
+  }
 #endif
   return i; // Return number of bytes written
 }
